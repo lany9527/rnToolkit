@@ -1,0 +1,3 @@
+rootProject.name = 'rnToolkit'
+
+include ':app'
