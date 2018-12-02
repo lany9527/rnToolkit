@@ -1,19 +1,19 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
   StyleSheet,
-  Dimensions,
-  Platform,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Text,
   Animated,
-  Easing
-} from "react-native";
-import { ViewPropTypes, withTheme } from "../config";
+  Easing,
+  Dimensions,
+} from 'react-native';
+import styles from './Overlay.style';
+import { ViewPropTypes } from '../../config/index';
 
-const dimensions = Dimensions.get("window");
+const dimensions = Dimensions.get('window');
 const windowWidth = dimensions.width;
 const windowHeight = dimensions.height;
 
@@ -21,47 +21,40 @@ export default class Overlay extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      spinValue : new Animated.Value(0)
+      spinValue: new Animated.Value(0),
     };
   }
 
-  componentDidMount () {
-    this.spin()
-  };
+  componentDidMount() {
+    this.spin();
+  }
 
-  spin () {
+  spin() {
     const { spinValue } = this.state;
     spinValue.setValue(0.3);
-    Animated.timing(
-      spinValue,
-      {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.linear
-      }
-    ).start()
+    Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 300,
+      easing: Easing.linear,
+    }).start();
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isVisible === false) {
       const { spinValue } = this.state;
-      Animated.timing(
-        spinValue,
-        {
-          toValue: 0,
-          duration: 250,
-          easing: Easing.linear
-        }
-      ).start()
+      Animated.timing(spinValue, {
+        toValue: 0,
+        duration: 250,
+        easing: Easing.linear,
+      }).start();
     }
     if (nextProps.isVisible === true) {
-      this.spin()
+      this.spin();
     }
   }
 
   render() {
     const { spinValue } = this.state;
-    console.log("** spinValue **", spinValue);
 
     const {
       children,
@@ -86,9 +79,9 @@ export default class Overlay extends PureComponent {
             styles.container,
             {
               backgroundColor: windowBackgroundColor,
-              opacity: spinValue
+              opacity: spinValue,
             },
-            containerStyle
+            containerStyle,
           ])}
           {...rest}
         >
@@ -102,10 +95,10 @@ export default class Overlay extends PureComponent {
                   width,
                   height,
                   opacity: spinValue,
-                  transform:[{ scale: spinValue }]
+                  transform: [{ scale: spinValue }],
                 },
                 fullScreen && { width: windowWidth, height: windowHeight },
-                overLayStyle
+                overLayStyle,
               ])}
             >
               {children}
@@ -136,68 +129,15 @@ Overlay.propTypes = {
   borderRadius: PropTypes.number,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  fullScreen: PropTypes.bool
+  fullScreen: PropTypes.bool,
 };
 
 Overlay.defaultProps = {
-  windowBackgroundColor: "rgba(0,0,0,.4)",
-  overlayBackgroundColor: "#fff",
+  windowBackgroundColor: 'rgba(0,0,0,.4)',
+  overlayBackgroundColor: '#fff',
   borderRadius: 10,
-  width: windowWidth*0.8,
-  height: windowHeight*0.4,
+  width: windowWidth * 0.8,
+  height: windowHeight * 0.4,
   onBackdropPress: () => null,
   onSubmit: () => null,
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: windowWidth,
-    height: windowHeight,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  overlay: {
-    borderRadius: 10,
-    padding: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: "rgba(0,0,0,.3)",
-        shadowOffset: { width: 0, height: 1 },
-        shadowRadius: 4
-      }
-    })
-  },
-  btnView: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    flexDirection: 'row',
-  },
-  btn: {
-    height: 56,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopColor: '#ddd',
-    borderTopWidth: 1,
-  },
-  cancelBtn: {
-    borderBottomLeftRadius: 10,
-    borderRightColor: '#ddd',
-    borderRightWidth: 1
-  },
-  confirmBtn: {
-    borderBottomRightRadius: 10,
-  },
-  btnText: {
-    fontSize: 16,
-    color: '#999'
-  },
-  confirmBtnText: {
-    color: '#1296db'
-  }
-});
